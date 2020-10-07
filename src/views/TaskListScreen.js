@@ -6,12 +6,16 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TextInput,
-	Footer
+	KeyboardAvoidingView,
+	SafeAreaView,
+	Platform
 } from "react-native";
-import { Header } from "native-base";
 import TaskItem from "../components/TaskItem";
 import firebase from "../../database/firebase";
-import { bold } from "ansi-colors";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Container } from "native-base";
+
+<script src="http://10.100.102.201:8097"></script>;
 
 export default class TaskListScreen extends Component {
 	constructor(props) {
@@ -19,10 +23,15 @@ export default class TaskListScreen extends Component {
 		this.state = {
 			taskList: [],
 			taskText: "",
-			userID: firebase.auth().currentUser.uid
+			editText: "",
+			userID: firebase.auth().currentUser.uid // get userID from firebase
 		};
+		this.updateTaskList = this.updateTaskList.bind(this);
 	}
 
+	// After mount, read all user's tasks and update the component's taskList.
+	// once: Listens for exactly one event of the specified event type ("value": triggers every time the data changes),
+	// retrieves the snapshot of the data and then stops listening.
 	componentDidMount() {
 		var tasks = [];
 		firebase
@@ -42,58 +51,44 @@ export default class TaskListScreen extends Component {
 			});
 	}
 
-	addTask() {
+	// Push task to user's task list in the database
+	pushTask(task, date) {
 		if (this.state.taskText) {
 			var d = new Date();
 			var date = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
 			var task = this.state.taskText;
-			this.state.taskList.push({
-				date,
-				task
-			});
-			this.setState({ taskList: this.state.taskList });
-			this.setState({ taskText: "" });
-			this.pushTask(task, date);
+			firebase
+				.database()
+				.ref(`Tasks/${this.state.userID}/`)
+				.push({
+					task,
+					date
+				})
+				.then(res => {
+					this.addTask(res.key, date, task);
+					console.log("Task was added to database");
+				})
+				.catch(error => {
+					console.log("error ", error);
+				});
 		}
 	}
 
-	pushTask(task, date) {
-		firebase
-			.database()
-			.ref(`Tasks/${this.state.userID}/`)
-			.push({
-				task,
-				date
-			})
-			.then(res => {
-				console.log("Task was written to database!");
-			})
-			.catch(error => {
-				console.log("error ", error);
-			});
-	}
-
-	deleteTask(id) {
-		var removed = this.state.taskList.splice(id, 1);
-		var removedKey = removed[0]["key"];
+	// Pressing '+' button adds a new task. Update state with new values and call push task.
+	addTask(key, date, task) {
+		this.state.taskList.push({
+			key,
+			date,
+			task
+		});
 		this.setState({ taskList: this.state.taskList });
-		if (removedKey !== undefined) {
-			this.delTask(removedKey);
-		}
+		this.setState({ taskText: "" });
 	}
 
-	delTask(key) {
-		var tasks = firebase.database().ref(`Tasks/${this.state.userID}/`);
-		tasks
-			.child(key)
-			.remove()
-			.then(function() {
-				console.log("Remove succeeded.");
-			})
-			.catch(function(error) {
-				console.log("Remove failed: " + error.message);
-			});
-	}
+	updateTaskList = tasks => {
+		const task = tasks;
+		this.setState({ taskList: task });
+	};
 
 	render() {
 		let tasks = this.state.taskList.map((val, key) => {
@@ -102,30 +97,85 @@ export default class TaskListScreen extends Component {
 					key={key}
 					keyval={key}
 					val={val}
-					deleteMethod={() => this.deleteTask(key)}
+					taskList={this.state.taskList}
+					updateTaskList={this.updateTaskList}
 				/>
 			);
 		});
+		// console.log(tasks);
 		return (
-			<View style={styles.container}>
-				<ScrollView>
-					<Text>{tasks}</Text>
-					<TextInput
-						style={styles.textInput}
-						onChangeText={taskText => this.setState({ taskText })}
-						value={this.state.taskText}
-						placeholder="New Task"
-					></TextInput>
-				</ScrollView>
-				<View>
-					<TouchableOpacity
-						onPress={this.addTask.bind(this)}
-						style={styles.addButton}
+			<Container>
+				{Platform.OS === "ios" ? (
+					<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
+						<View style={styles.container}>
+							<ScrollView
+								style={styles.scrollViewIos}
+								keyboardShouldPersistTaps="handled"
+							>
+								<View style={styles.containerIos}>
+									<View>
+										<Text>{tasks}</Text>
+									</View>
+									<View style={styles.containerIos}>
+										<TextInput
+											style={styles.textInput}
+											onChangeText={taskText => this.setState({ taskText })}
+											value={this.state.taskText}
+											placeholder="New Task"
+											onSubmitEditing={this.pushTask.bind(this)}
+										></TextInput>
+
+										<MaterialIcons
+											name="add"
+											size={24}
+											color="black"
+											onPress={this.pushTask.bind(this)}
+											style={styles.addButton}
+										/>
+									</View>
+								</View>
+							</ScrollView>
+						</View>
+					</KeyboardAvoidingView>
+				) : (
+					<KeyboardAvoidingView
+						behavior={undefined}
+						enabled
+						style={{ flex: 1 }}
 					>
-						<Text style={styles.addButtonText}>+</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
+						<View style={styles.container}>
+							<ScrollView
+								style={styles.scrollViewAndroid}
+								keyboardShouldPersistTaps="handled"
+							>
+								{console.log(tasks)}
+								<View style={styles.containerAndroid}>
+									<View>
+										<Text>{tasks}</Text>
+									</View>
+									<View style={styles.containerAndroid}>
+										<TextInput
+											style={styles.textInput}
+											onChangeText={taskText => this.setState({ taskText })}
+											value={this.state.taskText}
+											placeholder="New Task"
+											onSubmitEditing={this.pushTask.bind(this)}
+										></TextInput>
+
+										<MaterialIcons
+											name="add"
+											size={24}
+											color="black"
+											onPress={this.pushTask.bind(this)}
+											style={styles.addButton}
+										/>
+									</View>
+								</View>
+							</ScrollView>
+						</View>
+					</KeyboardAvoidingView>
+				)}
+			</Container>
 		);
 	}
 }
@@ -133,54 +183,48 @@ export default class TaskListScreen extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FFFFFF"
+		backgroundColor: "#FFFFFF",
+		position: "absolute",
+		width: "100%",
+		height: "100%",
+		flexDirection: "column"
 	},
-	scrollView: {
+	scrollViewIos: {
+		// flexDirection: "column",
+		// flexWrap: "wrap",
+		paddingLeft: 60
+	},
+	scrollViewAndroid: {
+		flexDirection: "column",
 		marginHorizontal: 20
 	},
-	header: {
-		backgroundColor: "#ff6699"
-	},
-	headerText: {
-		fontSize: 38,
-		fontWeight: "bold"
-	},
-	scrollContainer: {
+	containerIos: {
 		flex: 1,
-		marginBottom: 100
+		flexDirection: "column",
+
+		// flexWrap: "wrap",
+
+		flexDirection: "column"
+		// paddingLeft: 200
 	},
-	bottom: {
+	containerAndroid: {
 		flex: 1,
-		justifyContent: "flex-end",
-		marginBottom: 50
-	},
-	footer: {
-		position: "absolute",
-		bottom: 0,
-		left: 0,
-		right: 0,
-		zIndex: 10
+		flexDirection: "column"
 	},
 	textInput: {
+		// position: "absolute",
+		justifyContent: "space-evenly",
 		alignSelf: "stretch",
 		padding: 20,
 		borderTopWidth: 2,
-		borderTopColor: "#ededed"
+		borderTopColor: "#ededed",
+		fontSize: 18,
+		height: 60
 	},
 	addButton: {
 		position: "absolute",
 		zIndex: 11,
-		right: 20,
-		bottom: 10,
-		backgroundColor: "#ff6699",
-		width: 70,
-		height: 70,
-		borderRadius: 50,
-		alignItems: "center",
-		justifyContent: "center",
-		elevation: 8
-	},
-	addButtonText: {
-		fontSize: 24
+		right: 5,
+		bottom: 23
 	}
 });

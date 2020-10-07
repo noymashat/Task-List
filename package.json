@@ -20,6 +20,7 @@
 		"firebase": "7.9.0",
 		"native-base": "^2.13.14",
 		"react": "16.13.1",
+		"react-devtools": "^4.8.2",
 		"react-dom": "16.13.1",
 		"react-native": "https://github.com/expo/react-native/archive/sdk-39.0.2.tar.gz",
 		"react-native-elements": "^2.3.2",
