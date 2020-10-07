@@ -91,11 +91,11 @@ export default class TaskListScreen extends Component {
 	};
 
 	render() {
-		let tasks = this.state.taskList.map((val, key) => {
+		let tasks = this.state.taskList.map(val => {
 			return (
 				<TaskItem
-					key={key}
-					keyval={key}
+					key={val.key}
+					keyval={val.key}
 					val={val}
 					taskList={this.state.taskList}
 					updateTaskList={this.updateTaskList}
@@ -118,7 +118,7 @@ export default class TaskListScreen extends Component {
 									</View>
 									<View style={styles.containerIos}>
 										<TextInput
-											style={styles.textInput}
+											style={styles.textInputIos}
 											onChangeText={taskText => this.setState({ taskText })}
 											value={this.state.taskText}
 											placeholder="New Task"
@@ -148,14 +148,14 @@ export default class TaskListScreen extends Component {
 								style={styles.scrollViewAndroid}
 								keyboardShouldPersistTaps="handled"
 							>
-								{console.log(tasks)}
+								{tasks}
 								<View style={styles.containerAndroid}>
 									<View>
 										<Text>{tasks}</Text>
 									</View>
 									<View style={styles.containerAndroid}>
 										<TextInput
-											style={styles.textInput}
+											style={styles.textInputAndroid}
 											onChangeText={taskText => this.setState({ taskText })}
 											value={this.state.taskText}
 											placeholder="New Task"
@@ -183,35 +183,38 @@ export default class TaskListScreen extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FFFFFF",
-		position: "absolute",
-		width: "100%",
-		height: "100%",
-		flexDirection: "column"
+		backgroundColor: "#FFFFFF"
 	},
-	scrollViewIos: {
-		// flexDirection: "column",
-		// flexWrap: "wrap",
-		paddingLeft: 60
-	},
+	// scrollViewIos: {
+	// 	flex: 1,
+	// 	flexDirection: "column",
+	// 	flexWrap: "wrap-reverse",
+	// 	position: "absolute"
+	// 	// paddingLeft: 60
+	// },
 	scrollViewAndroid: {
-		flexDirection: "column",
+		// flexDirection: "column",
 		marginHorizontal: 20
 	},
-	containerIos: {
-		flex: 1,
-		flexDirection: "column",
-
-		// flexWrap: "wrap",
-
-		flexDirection: "column"
-		// paddingLeft: 200
-	},
+	// containerIos: {
+	// 	// flex: 1,
+	// 	// flexDirection: "column"
+	// },
 	containerAndroid: {
-		flex: 1,
-		flexDirection: "column"
+		flex: 1
+		// flexDirection: "column"
 	},
-	textInput: {
+	textInputIos: {
+		// position: "absolute",
+		// justifyContent: "space-evenly",
+		// alignSelf: "stretch",
+		padding: 20,
+		borderTopWidth: 2,
+		borderTopColor: "#ededed",
+		fontSize: 18,
+		height: 60
+	},
+	textInputAndroid: {
 		// position: "absolute",
 		justifyContent: "space-evenly",
 		alignSelf: "stretch",

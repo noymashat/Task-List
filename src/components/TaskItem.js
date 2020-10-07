@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import firebase from "../../database/firebase";
+import { Container } from "native-base";
 
 <script src="http://10.100.102.201:8097"></script>;
 
@@ -21,17 +22,31 @@ export default class TaskItem extends Component {
 
 	editTask(id) {
 		var tasks = [...this.props.taskList];
-		var updatedKey = tasks[id].key;
-		console.log(updatedKey);
+		// var updatedKey = tasks[id].key;
 		var d = new Date();
-		var task = (tasks[id].task =
-			this.state.text === ""
-				? tasks[id].task + this.state.text
-				: this.state.text);
-		var date = (tasks[id].date =
-			d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear());
+		// var task = (tasks[id].task =
+		// 	this.state.text === ""
+		// 		? tasks[id].task + this.state.text
+		// 		: this.state.text);
+		var newDate =
+			d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+		// this.props.updateTaskList(tasks);
+		// this.updateTask(updatedKey, task, date);
+		let task = tasks.find((taskObj, i) => {
+			if (taskObj.key === id) {
+				tasks[i] = {
+					date: newDate,
+					key: id,
+					task:
+						this.state.text === ""
+							? taskObj.task + this.state.text
+							: this.state.text
+				};
+				return taskObj; // stop searching
+			}
+		});
 		this.props.updateTaskList(tasks);
-		this.updateTask(updatedKey, task, date);
+		this.updateTask(task.key, task.task, task.date);
 	}
 
 	updateTask(key, task, date) {
@@ -53,17 +68,17 @@ export default class TaskItem extends Component {
 
 	// Pressing 'Delete' button removes a selected task. Update state and call delTask.
 	deleteTask(id) {
-		var tasks = [...this.props.taskList];
-		var removed = tasks.splice(id, 1);
-		this.change(tasks);
-		var removedKey = removed[0].key;
-		if (removedKey !== undefined) {
-			this.removeTask(removedKey);
-		}
 		// var tasks = [...this.props.taskList];
-		// tasks = tasks.filter(task => key != task.key);
+		// var removed = tasks.splice(id, 1);
 		// this.change(tasks);
-		// this.removeTask(key);
+		// var removedKey = removed[0].key;
+		// if (removedKey !== undefined) {
+		// 	this.removeTask(removedKey);
+		// }
+		var tasks = [...this.props.taskList];
+		tasks = tasks.filter(task => id !== task.key);
+		this.change(tasks);
+		this.removeTask(id);
 	}
 
 	// Remove task from database according to the key kept in the state.
@@ -83,120 +98,194 @@ export default class TaskItem extends Component {
 	render() {
 		const taskText = this.props.val.task;
 		return (
-			<View
-				style={{ flex: 1, justifyContent: "center" }}
-				key={this.props.keyval}
-			>
-				<View style={styles.task}>
-					{this.state.edit ? (
-						<View
-							style={
-								Platform.OS === "ios"
-									? styles.taskRowIos
-									: styles.taskRowAndroid
-							}
-						>
-							<View style={styles.taskPadded}>
-								<TextInput
-									style={styles.textInput}
-									onChangeText={text => this.setState({ text })}
-								>
-									{taskText}
-								</TextInput>
-								<MaterialIcons
-									style={styles.icon}
-									name="done"
-									size={24}
-									color="black"
-									onPress={() => {
-										this.editTask(this.props.keyval);
-										this.setState({ edit: false });
-									}}
-								/>
-								<AntDesign
-									style={styles.icon}
-									name="close"
-									size={24}
-									color="black"
-									onPress={() => this.setState({ edit: false })}
-								/>
-							</View>
-							<View
-								style={
-									Platform.OS === "ios" ? styles.dateIos : styles.dateAndroid
-								}
-							>
-								<Text style={styles.dateText}>{this.props.val.date}</Text>
-							</View>
-						</View>
-					) : (
-						<View
-							style={
-								Platform.OS === "ios"
-									? styles.taskRowIos
-									: styles.taskRowAndroid
-							}
-						>
-							<View style={styles.task}>
-								<CheckBox
-									value={this.state.checked}
-									checkedColor={"black"}
-									style={styles.cb}
-									onPress={() =>
-										this.setState({ checked: !this.state.checked })
-									}
-									checked={this.state.checked}
-								/>
+			<Container style={styles.container}>
+				{Platform.OS === "ios" ? (
+					<View
+						style={{ flex: 1, justifyContent: "center" }}
+						key={this.props.keyval}
+					>
+						<View style={styles.task}>
+							{this.state.edit ? (
+								<View style={styles.taskRowIos}>
+									<View style={styles.taskPadded}>
+										<TextInput
+											style={styles.textInput}
+											onChangeText={text => this.setState({ text })}
+										>
+											{taskText}
+										</TextInput>
+										<MaterialIcons
+											style={styles.icon}
+											name="done"
+											size={24}
+											color="black"
+											onPress={() => {
+												this.editTask(this.props.keyval);
+												this.setState({ edit: false });
+											}}
+										/>
+										<AntDesign
+											style={styles.icon}
+											name="close"
+											size={24}
+											color="black"
+											onPress={() => this.setState({ edit: false })}
+										/>
+									</View>
+									<View style={styles.dateIos}>
+										<Text style={styles.dateText}>{this.props.val.date}</Text>
+									</View>
+								</View>
+							) : (
+								<View style={styles.taskRowIos}>
+									<View style={styles.task}>
+										<CheckBox
+											value={this.state.checked}
+											checkedColor={"black"}
+											style={styles.cb}
+											onPress={() =>
+												this.setState({ checked: !this.state.checked })
+											}
+											checked={this.state.checked}
+										/>
 
-								<Text
-									style={this.state.checked ? styles.checked : styles.taskText}
-								>
-									{this.props.val.task}
-								</Text>
-								<AntDesign
-									style={styles.icon}
-									name="edit"
-									size={24}
-									color="black"
-									onPress={() => this.setState({ edit: true })}
-								/>
-								<AntDesign
-									style={styles.icon}
-									name="delete"
-									size={24}
-									color="black"
-									onPress={() => {
-										this.deleteTask(this.props.keyval);
-										this.setState({ checked: false });
-									}}
-								/>
-							</View>
-							<View
-								style={
-									Platform.OS === "ios" ? styles.dateIos : styles.dateAndroid
-								}
-							>
-								<Text style={styles.dateText}>{this.props.val.date}</Text>
-							</View>
+										<Text
+											style={
+												this.state.checked ? styles.checked : styles.taskText
+											}
+										>
+											{this.props.val.task}
+										</Text>
+										<AntDesign
+											style={styles.icon}
+											name="edit"
+											size={24}
+											color="black"
+											onPress={() => this.setState({ edit: true })}
+										/>
+										<AntDesign
+											style={styles.icon}
+											name="delete"
+											size={24}
+											color="black"
+											onPress={() => {
+												this.deleteTask(this.props.keyval);
+												this.setState({ checked: false });
+											}}
+										/>
+									</View>
+									<View style={styles.dateIos}>
+										<Text style={styles.dateText}>{this.props.val.date}</Text>
+									</View>
+								</View>
+							)}
 						</View>
-					)}
-				</View>
-			</View>
+					</View>
+				) : (
+					<View style={{ justifyContent: "center" }} key={this.props.keyval}>
+						<View style={styles.task}>
+							{this.state.edit ? (
+								<View style={styles.taskRowAndroid}>
+									<View style={styles.taskPadded}>
+										<TextInput
+											style={styles.textInput}
+											onChangeText={text => this.setState({ text })}
+										>
+											{taskText}
+										</TextInput>
+										<MaterialIcons
+											style={styles.icon}
+											name="done"
+											size={24}
+											color="black"
+											onPress={() => {
+												this.editTask(this.props.keyval);
+												this.setState({ edit: false });
+											}}
+										/>
+										<AntDesign
+											style={styles.icon}
+											name="close"
+											size={24}
+											color="black"
+											onPress={() => this.setState({ edit: false })}
+										/>
+									</View>
+									<View style={styles.dateAndroid}>
+										<Text style={styles.dateText}>{this.props.val.date}</Text>
+									</View>
+								</View>
+							) : (
+								<View style={styles.taskRowAndroid}>
+									<View style={styles.task}>
+										<CheckBox
+											value={this.state.checked}
+											checkedColor={"black"}
+											style={styles.cb}
+											onPress={() =>
+												this.setState({ checked: !this.state.checked })
+											}
+											checked={this.state.checked}
+										/>
+
+										<Text
+											style={
+												this.state.checked ? styles.checked : styles.taskText
+											}
+										>
+											{this.props.val.task}
+										</Text>
+										<AntDesign
+											style={styles.icon}
+											name="edit"
+											size={24}
+											color="black"
+											onPress={() => this.setState({ edit: true })}
+										/>
+										<AntDesign
+											style={styles.icon}
+											name="delete"
+											size={24}
+											color="black"
+											onPress={() => {
+												this.deleteTask(this.props.keyval);
+												this.setState({ checked: false });
+											}}
+										/>
+									</View>
+									<View style={styles.dateAndroid}>
+										<Text style={styles.dateText}>{this.props.val.date}</Text>
+									</View>
+								</View>
+							)}
+						</View>
+					</View>
+				)}
+			</Container>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	taskRowIos: {
+	container: {
 		flex: 1,
-		flexDirection: "column",
-		borderTopWidth: 0.5
-		// width: "100%",
-		// flexWrap: "wrap"
+		// flexDirection: "column",
+		backgroundColor: "#FFFFFF",
+		position: "absolute",
+		flexWrap: "wrap",
+		width: "100%",
+		height: "100%"
 	},
+	// taskRowIos: {
+	// 	flex: 1,
+	// 	// flexDirection: "column",
+	// 	borderTopWidth: 0.5,
+	// 	width: "100%",
+	// 	flexWrap: "wrap"
+	// },
 	taskRowAndroid: {
 		flex: 1,
-		flexDirection: "column",
+		// flexDirection: "column",
 		borderTopWidth: 0.5,
 		width: "100%"
 	},
@@ -204,6 +293,8 @@ const styles = StyleSheet.create({
 		paddingTop: 10,
 		paddingBottom: 10,
 		flexDirection: "row",
+		flexWrap: "wrap",
+
 		width: "100%",
 		justifyContent: "center"
 	},
@@ -237,7 +328,6 @@ const styles = StyleSheet.create({
 	textInput: {
 		// paddingLeft: 65,
 		width: 200,
-		// alignSelf: "baseline",
 		padding: 10,
 		fontSize: 18,
 		borderBottomWidth: 1
