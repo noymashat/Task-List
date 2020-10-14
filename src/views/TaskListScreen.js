@@ -10,10 +10,13 @@ import {
 	SafeAreaView,
 	Platform
 } from "react-native";
-import TaskItem from "../components/TaskItem";
+import TaskContainer from "../components/TaskContainer";
 import firebase from "../../database/firebase";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Container } from "native-base";
+import { TaskList } from "../components/TaskList";
+import AddTask from "../components/AddTask";
+import { pink } from "color-name";
 
 <script src="http://10.100.102.201:8097"></script>;
 
@@ -23,10 +26,9 @@ export default class TaskListScreen extends Component {
 		this.state = {
 			taskList: [],
 			taskText: "",
-			editText: "",
 			userID: firebase.auth().currentUser.uid // get userID from firebase
 		};
-		this.updateTaskList = this.updateTaskList.bind(this);
+		this.changeTaskList = this.changeTaskList.bind(this);
 	}
 
 	// After mount, read all user's tasks and update the component's taskList.
@@ -44,180 +46,121 @@ export default class TaskListScreen extends Component {
 					tasks.push({
 						key: childKey,
 						date: childData.date,
-						task: childData.task
+						task: childData.task,
+						checked: childData.checked
 					});
 				});
 				this.setState({ taskList: tasks });
 			});
 	}
 
-	// Push task to user's task list in the database
-	pushTask(task, date) {
-		if (this.state.taskText) {
-			var d = new Date();
-			var date = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
-			var task = this.state.taskText;
-			firebase
-				.database()
-				.ref(`Tasks/${this.state.userID}/`)
-				.push({
-					task,
-					date
-				})
-				.then(res => {
-					this.addTask(res.key, date, task);
-					console.log("Task was added to database");
-				})
-				.catch(error => {
-					console.log("error ", error);
+	componentWillUnmount() {
+		var tasks = [];
+		firebase
+			.database()
+			.ref(`Tasks/${this.state.userID}/`)
+			.once("value", snapshot => {
+				snapshot.forEach(function(childSnapshot) {
+					var childKey = childSnapshot.key;
+					var childData = childSnapshot.val();
+					tasks.push({
+						key: childKey,
+						date: childData.date,
+						task: childData.task,
+						checked: childData.checked
+					});
 				});
-		}
+				this.setState({ taskList: tasks });
+			});
 	}
 
-	// Pressing '+' button adds a new task. Update state with new values and call push task.
-	addTask(key, date, task) {
-		this.state.taskList.push({
-			key,
-			date,
-			task
-		});
-		this.setState({ taskList: this.state.taskList });
-		this.setState({ taskText: "" });
-	}
-
-	updateTaskList = tasks => {
+	// update list from taskItem
+	changeTaskList = tasks => {
 		const task = tasks;
 		this.setState({ taskList: task });
 	};
 
 	render() {
-		let tasks = this.state.taskList.map(val => {
-			return (
-				<TaskItem
-					key={val.key}
-					keyval={val.key}
-					val={val}
-					taskList={this.state.taskList}
-					updateTaskList={this.updateTaskList}
-				/>
-			);
-		});
-		// console.log(tasks);
+		const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
 		return (
 			<Container>
-				{Platform.OS === "ios" ? (
-					<KeyboardAvoidingView behavior="padding" enabled style={{ flex: 1 }}>
-						<View style={styles.container}>
-							<ScrollView
-								style={styles.scrollViewIos}
-								keyboardShouldPersistTaps="handled"
-							>
-								<View style={styles.containerIos}>
-									<View>
-										<Text>{tasks}</Text>
-									</View>
-									<View style={styles.containerIos}>
-										<TextInput
-											style={styles.textInputIos}
-											onChangeText={taskText => this.setState({ taskText })}
-											value={this.state.taskText}
-											placeholder="New Task"
-											onSubmitEditing={this.pushTask.bind(this)}
-										></TextInput>
-
-										<MaterialIcons
-											name="add"
-											size={24}
-											color="black"
-											onPress={this.pushTask.bind(this)}
-											style={styles.addButton}
-										/>
-									</View>
-								</View>
-							</ScrollView>
-						</View>
-					</KeyboardAvoidingView>
-				) : (
-					<KeyboardAvoidingView
-						behavior={undefined}
-						enabled
-						style={{ flex: 1 }}
-					>
-						<View style={styles.container}>
-							<ScrollView
-								style={styles.scrollViewAndroid}
-								keyboardShouldPersistTaps="handled"
-							>
-								{tasks}
-								<View style={styles.containerAndroid}>
-									<View>
-										<Text>{tasks}</Text>
-									</View>
-									<View style={styles.containerAndroid}>
-										<TextInput
-											style={styles.textInputAndroid}
-											onChangeText={taskText => this.setState({ taskText })}
-											value={this.state.taskText}
-											placeholder="New Task"
-											onSubmitEditing={this.pushTask.bind(this)}
-										></TextInput>
-
-										<MaterialIcons
-											name="add"
-											size={24}
-											color="black"
-											onPress={this.pushTask.bind(this)}
-											style={styles.addButton}
-										/>
-									</View>
-								</View>
-							</ScrollView>
-						</View>
-					</KeyboardAvoidingView>
-				)}
+				<KeyboardAvoidingView
+					behavior={Platform.OS === "ios" ? "padding" : { undefined }}
+					enabled
+					style={styles.keyboardAvoidingView}
+				>
+					<View style={styles.view1}>
+						<ScrollView
+							keyboardShouldPersistTaps="handled"
+							style={styles.scrollView}
+						>
+							<View style={styles.view2}>
+								<TaskList
+									taskList={this.state.taskList}
+									changeTaskList={this.changeTaskList}
+									styles={styles}
+								/>
+								<AddTask
+									changeTaskList={this.changeTaskList}
+									taskList={this.state.taskList}
+									styles={styles}
+								/>
+							</View>
+						</ScrollView>
+					</View>
+				</KeyboardAvoidingView>
 			</Container>
 		);
 	}
 }
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#FFFFFF"
+const stylesAndroid = StyleSheet.create({
+	keyboardAvoidingView: {
+		flex: 1
 	},
-	// scrollViewIos: {
-	// 	flex: 1,
-	// 	flexDirection: "column",
-	// 	flexWrap: "wrap-reverse",
-	// 	position: "absolute"
-	// 	// paddingLeft: 60
-	// },
-	scrollViewAndroid: {
-		// flexDirection: "column",
+	view1: {
+		flex: 1,
+		justifyContent: "center"
+	},
+	scrollView: {
 		marginHorizontal: 20
 	},
-	// containerIos: {
-	// 	// flex: 1,
-	// 	// flexDirection: "column"
-	// },
-	containerAndroid: {
+	view2: {
 		flex: 1
-		// flexDirection: "column"
 	},
-	textInputIos: {
-		// position: "absolute",
-		// justifyContent: "space-evenly",
-		// alignSelf: "stretch",
+	textInput: {
 		padding: 20,
 		borderTopWidth: 2,
 		borderTopColor: "#ededed",
 		fontSize: 18,
 		height: 60
 	},
-	textInputAndroid: {
-		// position: "absolute",
-		justifyContent: "space-evenly",
-		alignSelf: "stretch",
+	addButton: {
+		position: "absolute",
+		zIndex: 11,
+		right: 5,
+		bottom: 23
+	}
+});
+
+const stylesIos = StyleSheet.create({
+	keyboardAvoidingView: {
+		flex: 1
+	},
+	view1: {
+		flex: 1,
+		justifyContent: "center"
+	},
+	scrollView: {
+		marginHorizontal: 20
+	},
+	view2: {
+		position: "relative",
+		flex: 1,
+		flexDirection: "column",
+		backgroundColor: "#ededed"
+	},
+	textInput: {
 		padding: 20,
 		borderTopWidth: 2,
 		borderTopColor: "#ededed",
