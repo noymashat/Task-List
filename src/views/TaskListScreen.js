@@ -1,11 +1,18 @@
 import React, { Component, useState, useEffect } from "react";
-import { StyleSheet, View, Text, ImageBackground, Image } from "react-native";
+import {
+	StyleSheet,
+	View,
+	Text,
+	ImageBackground,
+	Image,
+	Platform
+} from "react-native";
 import firebase from "../../database/firebase";
 // import { TaskList } from "../components/TaskList";
 import { AddTask } from "../components/AddTask";
 import { FlatList } from "react-native-gesture-handler";
 import { TaskContainer } from "../components/TaskContainer";
-import BG from "../../assets/BG.jpeg";
+import BG from "../../assets/BG.png";
 
 <script src="http://10.100.102.201:8097"></script>;
 
@@ -29,7 +36,7 @@ export const TaskListScreen = () => {
 						checked: childData.checked
 					});
 				});
-				setTaskList(tasks);
+				setTaskList(tasks.reverse());
 			});
 	}, []);
 
@@ -39,7 +46,6 @@ export const TaskListScreen = () => {
 	};
 
 	// const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
-
 	return (
 		<View style={styles.container}>
 			<ImageBackground style={styles.image} source={BG}>
@@ -74,14 +80,12 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		position: "relative",
-		backgroundColor: "rgba(255, 255, 255, 0.3)"
-		// marginHorizontal: 0
+		marginTop: Platform.OS === "ios" ? undefined : 80
 	},
 	container: {
 		flex: 1,
 		justifyContent: "center",
-		alignItems: "center",
-		// backgroundColor: "white"
+		alignItems: "center"
 	},
 	image: {
 		height: "100%",

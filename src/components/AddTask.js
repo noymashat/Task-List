@@ -7,6 +7,7 @@ import {
 	KeyboardAvoidingView
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import Colors from "../../colors";
 
 export const AddTask = props => {
 	const [taskText, setTaskText] = useState("");
@@ -40,7 +41,7 @@ export const AddTask = props => {
 	const addTask = (key, date, task, checked) => {
 		console.log("add task:", props.taskList);
 		var tasks = [...props.taskList];
-		tasks.push({
+		tasks.unshift({
 			key,
 			date,
 			task,
@@ -79,23 +80,22 @@ export const AddTask = props => {
 const styles = StyleSheet.create({
 	view1: {
 		position: "relative",
-		paddingTop: 10,
-		borderColor:  "rgb(170, 100, 110)",
-		borderTopWidth: 3
+		paddingTop: 10
 	},
 	addButton: {
 		position: "absolute",
 		zIndex: 11,
-		right: 15,
-		bottom: 15
+		right: 20,
+		bottom: 25
 	},
 	textInput: {
 		padding: 20,
-		// borderTopWidth: 3,
-		// borderTopColor: "#FFFFFF",
 		fontSize: 18,
 		height: 60,
 		borderRadius: 20,
-		backgroundColor: "rgba(249, 223, 206, 0.65)"
+		borderColor: Colors.light.borderColor,
+		borderWidth: 2,
+		backgroundColor: Colors.light.itemNoOpacity,
+		margin: 7
 	}
 });

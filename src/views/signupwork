@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-	StyleSheet,
-	View,
-	ImageBackground,
-	Text,
-	KeyboardAvoidingView,
-	ScrollView
-} from "react-native";
+import { StyleSheet, View, ImageBackground, Text } from "react-native";
 import { Form, Item, Input, Button, Label } from "native-base";
 import firebase from "../../database/firebase";
 import BG from "../../assets/BG.png";
@@ -84,63 +77,49 @@ export default class SignInScreen extends Component {
 
 	render() {
 		return (
-			<ImageBackground style={styles.image} source={BG}>
-				<View style={styles.view2}>
-					<KeyboardAvoidingView
-						behavior={Platform.OS == "ios" ? "padding" : "height"}
-						keyboardVerticalOffset={100}
-						style={{ width: "100%" }}
-					>
-						<ScrollView>
-							<View style={{ alignItems: "center" }}>
-								<Form style={styles.form}>
-									<Item style={styles.formItem} stackedLabel>
-										<Label>First Name</Label>
-										<Input onChangeText={this.handleFirstName} />
-									</Item>
-									<Item style={styles.formItem} stackedLabel>
-										<Label>Last Name</Label>
-										<Input onChangeText={this.handleLastName} />
-									</Item>
-									<Item style={styles.formItem} stackedLabel>
-										<Label>Email</Label>
-										<Input onChangeText={this.handleEmail} />
-									</Item>
-									<Item style={styles.formItem} stackedLabel>
-										<Label>Password</Label>
-										<Input
-											onChangeText={this.handlePassword}
-											secureTextEntry={true}
-										/>
-									</Item>
-									<Item style={styles.formItemLast} stackedLabel last>
-										<Label>Confirm Password</Label>
-										<Input
-											onChangeText={this.handleConfPassword}
-											secureTextEntry={true}
-										/>
-									</Item>
-									{this.state.error === "" ? (
-										<Text style={{ fontSize: 14, padding: 10 }}></Text>
-									) : (
-										<Text style={styles.errorText}>
-											Error: {this.state.error}
-										</Text>
-									)}
-									<Button
-										style={styles.button}
-										full
-										light
-										onPress={this.onSignUp}
-									>
-										<Text style={{ fontSize: 18 }}> SIGN UP </Text>
-									</Button>
-								</Form>
-							</View>
-						</ScrollView>
-					</KeyboardAvoidingView>
-				</View>
-			</ImageBackground>
+			<View style={styles.view1}>
+				<ImageBackground style={styles.image} source={BG}>
+					<View style={styles.view2}>
+						<Form style={styles.form}>
+							<Item style={styles.formItem} stackedLabel>
+								<Label>First Name</Label>
+								<Input onChangeText={this.handleFirstName} />
+							</Item>
+							<Item style={styles.formItem} stackedLabel>
+								<Label>Last Name</Label>
+								<Input onChangeText={this.handleLastName} />
+							</Item>
+							<Item style={styles.formItem} stackedLabel>
+								<Label>Email</Label>
+								<Input onChangeText={this.handleEmail} />
+							</Item>
+							<Item style={styles.formItem} stackedLabel>
+								<Label>Password</Label>
+								<Input
+									onChangeText={this.handlePassword}
+									secureTextEntry={true}
+								/>
+							</Item>
+							<Item style={styles.formItemLast} stackedLabel last>
+								<Label>Confirm Password</Label>
+								<Input
+									onChangeText={this.handleConfPassword}
+									secureTextEntry={true}
+								/>
+							</Item>
+							{this.state.error === "" ? (
+								<Text style={{ fontSize: 14, padding: 10 }}></Text>
+							) : (
+								<Text style={styles.errorText}>Error: {this.state.error}</Text>
+							)}
+							<Button style={styles.button} full light onPress={this.onSignUp}>
+								<Text style={{ fontSize: 18 }}> SIGN UP </Text>
+							</Button>
+						</Form>
+						<View style={{ flex: 0.7 }}></View>
+					</View>
+				</ImageBackground>
+			</View>
 		);
 	}
 }
@@ -154,8 +133,9 @@ const styles = StyleSheet.create({
 	view2: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "flex-start",
-		marginTop: Platform.OS === "ios" ? 20 : 100
+		justifyContent: "center",
+		position: "relative",
+		marginTop: Platform.OS === "ios" ? undefined : 80
 	},
 	form: {
 		width: "90%",

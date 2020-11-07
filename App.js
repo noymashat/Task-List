@@ -7,8 +7,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { TaskListScreen } from "./src/views/TaskListScreen";
 import SignInScreen from "./src/views/SignInScreen";
 import SignUpScreen from "./src/views/SignUpScreen";
-import { View, Image } from "react-native";
-import BG from "./assets/BG.jpeg";
+import { View, Image, Platform } from "react-native";
+import BG from "./assets/BG.png";
 
 const Stack = createStackNavigator();
 
@@ -41,12 +41,11 @@ export default class App extends Component {
 			// navigation is initiated with sign in page
 			return (
 				<Root>
-					<View style={{ flex: 1, backgroundColor: "transparent" }}>
+					<View style={{ flex: 1 }}>
 						<Image
 							source={BG}
 							style={{
 								position: "absolute",
-								zindex: 100,
 								opacity: 0.7
 							}}
 						/>
@@ -56,27 +55,33 @@ export default class App extends Component {
 									name="Sign Up"
 									component={SignUpScreen}
 									options={{
+										title: "",
 										headerStyle: {
 											backgroundColor: "transparent"
-										}
+										},
+										headerTransparent: Platform.OS === "ios" ? false : true
 									}}
 								/>
 								<Stack.Screen
 									name="Sign In"
 									component={SignInScreen}
 									options={{
+										title: "",
 										headerStyle: {
 											backgroundColor: "transparent"
-										}
+										},
+										headerTransparent: Platform.OS === "ios" ? false : true
 									}}
 								/>
 								<Stack.Screen
 									name="Task List"
 									component={TaskListScreen}
 									options={{
+										title: "",
 										headerStyle: {
 											backgroundColor: "transparent"
-										}
+										},
+										headerTransparent: Platform.OS === "ios" ? false : true
 									}}
 								/>
 							</Stack.Navigator>

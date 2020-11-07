@@ -3,6 +3,8 @@ import { StyleSheet, View, ImageBackground } from "react-native";
 import firebase from "../../database/firebase";
 import { EditTask } from "./EditTask";
 import { TaskItem } from "./TaskItem";
+import Colors from "../../colors";
+
 import TASK from "../../assets/task.jpeg";
 
 <script src="http://10.100.102.201:8097"></script>;
@@ -57,9 +59,9 @@ export const TaskContainer = props => {
 const styles = StyleSheet.create({
 	view1: {
 		flex: 1,
-		backgroundColor: "rgba(249, 223, 206, 0.65)",
+		backgroundColor: Colors.light.itemOpacity,
 		borderRadius: 10,
-		borderColor: "rgb(170, 100, 110)",
+		borderColor: Colors.light.borderColor,
 		borderWidth: 2
 	}
 });
