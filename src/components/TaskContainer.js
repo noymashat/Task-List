@@ -1,26 +1,18 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text, TextInput } from "react-native";
-import { CheckBox } from "react-native-elements";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { StyleSheet, View, ImageBackground } from "react-native";
 import firebase from "../../database/firebase";
-import { Container } from "native-base";
 import { EditTask } from "./EditTask";
 import { TaskItem } from "./TaskItem";
+import TASK from "../../assets/task.jpeg";
 
 <script src="http://10.100.102.201:8097"></script>;
 
-export default class TaskContainer extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			edit: false,
-			userID: firebase.auth().currentUser.uid // get userID from firebase
-		};
-		this.changeEdit.bind(this);
-	}
+export const TaskContainer = props => {
+	const [edit, setEdit] = useState(false);
+	const userID = firebase.auth().currentUser.uid;
 
-	updateTask(key, task, date, checked) {
-		var tasks = firebase.database().ref(`Tasks/${this.state.userID}/`);
+	const updateTask = (key, task, date, checked) => {
+		var tasks = firebase.database().ref(`Tasks/${userID}/`);
 		tasks
 			.child(key)
 			.update({ task: task, date: date, checked: checked })
@@ -30,85 +22,44 @@ export default class TaskContainer extends Component {
 			.catch(function(error) {
 				console.log("Update failed: " + error.message);
 			});
-	}
-
-	changeEdit = bool => {
-		const edit = bool;
-		this.setState({ edit });
 	};
 
-	render() {
-		const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
-		return (
-			<Container style={styles.container}>
-				<View style={styles.view1} key={this.props.keyval}>
-					<View style={styles.view2}>
-						{this.state.edit ? (
-							<EditTask
-								val={this.props.val}
-								keyval={this.props.keyval}
-								taskList={this.props.taskList}
-								changeEdit={this.changeEdit}
-								changeTaskList={this.props.changeTaskList}
-								updateTask={this.updateTask.bind(this)}
-								styles={styles}
-							/>
-						) : (
-							<TaskItem
-								val={this.props.val}
-								keyval={this.props.keyval}
-								taskList={this.props.taskList}
-								checked={this.props.checked}
-								updateTask={this.updateTask.bind(this)}
-								changeTaskList={this.props.changeTaskList}
-								changeEdit={this.changeEdit}
-								styles={styles}
-							/>
-						)}
-					</View>
-				</View>
-			</Container>
-		);
-	}
-}
-const stylesIos = StyleSheet.create({
-	container: {
-		flex: 1,
-		flexDirection: "column",
-		backgroundColor: "#FFFFFF",
-		position: "absolute",
-		flexWrap: "wrap",
-		width: "100%",
-		height: "100%"
-	},
-	view1: {},
-	view2: {
-		paddingTop: 10,
-		paddingBottom: 10,
-		flexDirection: "row",
-		flexWrap: "wrap",
-		width: "100%",
-		justifyContent: "center"
-	}
-});
+	const changeEdit = bool => {
+		const edit = bool;
+		setEdit(edit);
+	};
 
-const stylesAndroid = StyleSheet.create({
-	container: {
+	// const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
+
+	return (
+		<View style={styles.view1} key={props.keyval}>
+			{edit ? (
+				<EditTask
+					val={props.val}
+					taskList={props.taskList}
+					changeTaskList={props.changeTaskList}
+					updateTask={updateTask}
+					changeEdit={changeEdit}
+				/>
+			) : (
+				<TaskItem
+					val={props.val}
+					taskList={props.taskList}
+					changeTaskList={props.changeTaskList}
+					changeEdit={changeEdit}
+					updateTask={updateTask}
+				/>
+			)}
+		</View>
+	);
+};
+
+const styles = StyleSheet.create({
+	view1: {
 		flex: 1,
-		flexDirection: "column",
-		backgroundColor: "#FFFFFF",
-		position: "absolute",
-		flexWrap: "wrap",
-		width: "100%",
-		height: "100%"
-	},
-	view1: { flex: 1, justifyContent: "center" },
-	view2: {
-		paddingTop: 10,
-		paddingBottom: 10,
-		flexDirection: "row",
-		flexWrap: "wrap",
-		width: "100%",
-		justifyContent: "center"
+		backgroundColor: "rgba(249, 223, 206, 0.65)",
+		borderRadius: 10,
+		borderColor: "rgb(170, 100, 110)",
+		borderWidth: 2
 	}
 });

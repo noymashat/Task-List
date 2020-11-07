@@ -5,10 +5,9 @@ import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 export const EditTask = props => {
 	const [text, setText] = useState("");
 
+	// Pressing 'Edit' button changes the name of the selected task. Update taskList and call updateTask.
 	const editTask = id => {
-		console.log("edit");
 		var tasks = [...props.taskList];
-		console.log(tasks);
 		var d = new Date();
 		var newDate =
 			d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
@@ -22,8 +21,6 @@ export const EditTask = props => {
 		props.changeTaskList(tasks);
 		props.updateTask(task.key, task.task, task.date, task.checked);
 	};
-
-	const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
 
 	return (
 		<View style={styles.view1}>
@@ -40,7 +37,7 @@ export const EditTask = props => {
 					size={24}
 					color="black"
 					onPress={() => {
-						editTask(props.keyval);
+						editTask(props.val.key);
 						props.changeEdit(false);
 					}}
 				/>
@@ -59,11 +56,9 @@ export const EditTask = props => {
 	);
 };
 
-const stylesIos = StyleSheet.create({
+const styles = StyleSheet.create({
 	view1: {
 		flex: 1,
-		// flexDirection: "column",
-		borderTopWidth: 0.5,
 		width: "100%"
 	},
 	view2: {
@@ -72,12 +67,11 @@ const stylesIos = StyleSheet.create({
 		flexDirection: "row",
 		width: "100%",
 		justifyContent: "center",
-		paddingLeft: 55,
+		paddingLeft: 45,
 		flexWrap: "wrap"
 	},
 	textInput: {
-		// paddingLeft: 65,
-		width: 200,
+		width: 180,
 		padding: 10,
 		fontSize: 18,
 		borderBottomWidth: 1
@@ -88,44 +82,8 @@ const stylesIos = StyleSheet.create({
 	},
 	date: {
 		flex: 1,
-		paddingLeft: 50
-	},
-	dateText: {
-		paddingLeft: 15,
-		fontSize: 14
-	}
-});
-
-const stylesAndroid = StyleSheet.create({
-	view1: {
-		flex: 1,
-		// flexDirection: "column",
-		borderTopWidth: 0.5,
-		width: "100%"
-	},
-	view2: {
-		paddingTop: 10,
-		paddingBottom: 10,
-		flexDirection: "row",
-		width: "100%",
-		justifyContent: "center",
-		paddingLeft: 55,
-		flexWrap: "wrap"
-	},
-	textInput: {
-		// paddingLeft: 65,
-		width: 200,
-		padding: 10,
-		fontSize: 18,
-		borderBottomWidth: 1
-	},
-	icon: {
-		padding: 10,
-		alignSelf: "flex-end"
-	},
-	date: {
-		flex: 1,
-		paddingLeft: 50
+		paddingLeft: 50,
+		paddingBottom: 10
 	},
 	dateText: {
 		paddingLeft: 15,
