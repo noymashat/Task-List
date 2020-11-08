@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
-		position: "relative",
-		marginTop: Platform.OS === "ios" ? undefined : 80
+		position: "relative"
+		// marginTop: Platform.OS === "ios" ? undefined : 80
 	},
 	container: {
 		flex: 1,

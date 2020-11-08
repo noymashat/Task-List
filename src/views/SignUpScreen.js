@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "flex-start",
-		marginTop: Platform.OS === "ios" ? 20 : 100
+		marginTop: 40
 	},
 	form: {
 		width: "90%",
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		borderColor: Colors.light.borderColor,
 		paddingLeft: 15,
-		borderWidth: 2,
+		borderBottomWidth: 2,
 		margin: 10
 	},
 	formItemLast: {
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		borderColor: Colors.light.borderColor,
 		paddingLeft: 15,
-		borderWidth: 2,
+		borderBottomWidth: 2,
 		marginTop: 10
 	},
 	button: {

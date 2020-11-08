@@ -42,13 +42,13 @@ export default class App extends Component {
 			return (
 				<Root>
 					<View style={{ flex: 1 }}>
-						<Image
+						{/*<Image
 							source={BG}
 							style={{
 								position: "absolute",
 								opacity: 0.7
 							}}
-						/>
+						/> */}
 						<NavigationContainer>
 							<Stack.Navigator initialRouteName="Sign In">
 								<Stack.Screen
@@ -57,9 +57,11 @@ export default class App extends Component {
 									options={{
 										title: "",
 										headerStyle: {
-											backgroundColor: "transparent"
-										},
-										headerTransparent: Platform.OS === "ios" ? false : true
+											backgroundColor: "rgb(245,215,205)",
+											shadowOpacity: 0,
+											elevation: 0
+										}
+										// headerTransparent: Platform.OS === "ios" ? false : true
 									}}
 								/>
 								<Stack.Screen
@@ -68,9 +70,11 @@ export default class App extends Component {
 									options={{
 										title: "",
 										headerStyle: {
-											backgroundColor: "transparent"
-										},
-										headerTransparent: Platform.OS === "ios" ? false : true
+											backgroundColor: "rgb(245,215,205)",
+											shadowOpacity: 0,
+											elevation: 0
+										}
+										// headerTransparent: Platform.OS === "ios" ? false : true
 									}}
 								/>
 								<Stack.Screen
@@ -79,9 +83,12 @@ export default class App extends Component {
 									options={{
 										title: "",
 										headerStyle: {
-											backgroundColor: "transparent"
-										},
-										headerTransparent: Platform.OS === "ios" ? false : true
+											backgroundColor: "rgb(245,215,205)",
+											shadowOpacity: 0,
+											elevation: 0
+											// backgroundColor: "transparent"
+										}
+										// headerTransparent: Platform.OS === "ios" ? false : true
 									}}
 								/>
 							</Stack.Navigator>

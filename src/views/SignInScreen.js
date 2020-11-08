@@ -89,7 +89,13 @@ export default class SignInScreen extends Component {
 						<ScrollView keyboardShouldPersistTaps="always">
 							<View style={{ alignItems: "center" }}>
 								<Form style={styles.form}>
-									<Item style={{ ...styles.formItem, margin: 15 }} stackedLabel>
+									<Item
+										style={{
+											...styles.formItem,
+											margin: 15,
+										}}
+										stackedLabel
+									>
 										<Label>Email</Label>
 										<Input onChangeText={this.handleEmail} />
 									</Item>
@@ -139,13 +145,14 @@ const styles = StyleSheet.create({
 	image: {
 		height: "100%",
 		width: "100%"
+		// opacity: 0.9
 	},
 	view2: {
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
-		position: "relative",
-		marginTop: Platform.OS === "ios" ? undefined : 75
+		position: "relative"
+		// marginTop: Platform.OS === "ios" ? undefined : 75
 	},
 	form: {
 		width: "90%",
@@ -160,7 +167,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		borderColor: Colors.light.borderColor,
 		paddingLeft: 15,
-		borderWidth: 2
+		borderBottomWidth: 2
 	},
 	button: {
 		alignSelf: "center",
