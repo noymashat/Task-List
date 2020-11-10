@@ -50,6 +50,7 @@ export const TaskItem = props => {
 				<CheckBox
 					checked={checked}
 					checkedColor={"black"}
+					uncheckedColor={"black"}
 					onIconPress={() => {
 						changeChecked(props.val.key, !checked);
 					}}

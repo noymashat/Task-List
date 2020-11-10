@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import { Root } from "native-base";
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { TaskListScreen } from "./src/views/TaskListScreen";
-import SignInScreen from "./src/views/SignInScreen";
-import SignUpScreen from "./src/views/SignUpScreen";
-import { View, Image } from "react-native";
-import BG from "./assets/BG.jpeg";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import StackNavigator from "./src/navigation/StackNavigation";
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
 
 export default class App extends Component {
 	constructor(props) {
@@ -41,45 +39,9 @@ export default class App extends Component {
 			// navigation is initiated with sign in page
 			return (
 				<Root>
-					<View style={{ flex: 1, backgroundColor: "transparent" }}>
-						<Image
-							source={BG}
-							style={{
-								position: "absolute",
-								zindex: 100,
-								opacity: 0.7
-							}}
-						/>
+					<View style={{ flex: 1 }}>
 						<NavigationContainer>
-							<Stack.Navigator initialRouteName="Sign In">
-								<Stack.Screen
-									name="Sign Up"
-									component={SignUpScreen}
-									options={{
-										headerStyle: {
-											backgroundColor: "transparent"
-										}
-									}}
-								/>
-								<Stack.Screen
-									name="Sign In"
-									component={SignInScreen}
-									options={{
-										headerStyle: {
-											backgroundColor: "transparent"
-										}
-									}}
-								/>
-								<Stack.Screen
-									name="Task List"
-									component={TaskListScreen}
-									options={{
-										headerStyle: {
-											backgroundColor: "transparent"
-										}
-									}}
-								/>
-							</Stack.Navigator>
+							<StackNavigator />
 						</NavigationContainer>
 					</View>
 				</Root>

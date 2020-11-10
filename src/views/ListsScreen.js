@@ -12,13 +12,13 @@ import firebase from "../../database/firebase";
 import { AddTask } from "../components/AddTask";
 import { FlatList } from "react-native-gesture-handler";
 import { TaskContainer } from "../components/TaskContainer";
+import { TaskListScreen } from "./TaskListScreen";
 import BG from "../../assets/BG.png";
-// import DrawerNavigator from "../navigation/DrawerNavigation";
-// import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "react-navigation-drawer";
 
 <script src="http://10.100.102.201:8097"></script>;
 
-export const TaskListScreen = () => {
+export const ListsScreen = () => {
 	const [taskList, setTaskList] = useState([]);
 	const userID = firebase.auth().currentUser.uid;
 
@@ -42,36 +42,43 @@ export const TaskListScreen = () => {
 			});
 	}, []);
 
-	const changeTaskList = tasks => {
+	const DrawerNav = createDrawerNavigator({
+		ListOne: TaskListScreen
+	});
+
+    const changeTaskList = tasks => {
+        
 		const task = tasks;
 		setTaskList(task);
 	};
 
-	// const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
 	return (
 		<View style={styles.container}>
-			<ImageBackground style={styles.image} source={BG}>
-				<View style={styles.view1}>
-					<FlatList
-						data={taskList}
-						renderItem={({ item }) => {
-							return (
-								<View>
-									<TaskContainer
-										val={item}
-										taskList={taskList}
-										changeTaskList={changeTaskList}
-										checked={item.checked}
-									/>
-									<Text></Text>
-								</View>
-							);
-						}}
-						keyExtractor={item => item.key}
-					/>
-					<AddTask changeTaskList={changeTaskList} taskList={taskList} />
-				</View>
-			</ImageBackground>
+			<View>
+				<DrawerNav></DrawerNav>
+				<ImageBackground style={styles.image} source={BG}>
+					<View style={styles.view1}>
+						<FlatList
+							data={taskList}
+							renderItem={({ item }) => {
+								return (
+									<View>
+										<TaskContainer
+											val={item}
+											taskList={taskList}
+											changeTaskList={changeTaskList}
+											checked={item.checked}
+										/>
+										<Text></Text>
+									</View>
+								);
+							}}
+							keyExtractor={item => item.key}
+						/>
+						<AddTask changeTaskList={changeTaskList} taskList={taskList} />
+					</View>
+				</ImageBackground>
+			</View>
 		</View>
 	);
 };
