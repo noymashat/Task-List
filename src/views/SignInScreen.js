@@ -25,7 +25,7 @@ export default class SignInScreen extends Component {
 
 	// keep user signed in
 	componentDidMount() {
-		// this.checkIfLoggedIn();
+		this.checkIfLoggedIn();
 	}
 
 	checkIfLoggedIn = () => {
@@ -67,7 +67,7 @@ export default class SignInScreen extends Component {
 						password: "",
 						error: ""
 					});
-					this.props.navigation.navigate("Task List");
+					this.props.navigation.navigate("Drawer");
 				})
 				.catch(err => {
 					var e = err.code.slice(5);
@@ -92,7 +92,7 @@ export default class SignInScreen extends Component {
 									<Item
 										style={{
 											...styles.formItem,
-											margin: 15,
+											margin: 15
 										}}
 										stackedLabel
 									>

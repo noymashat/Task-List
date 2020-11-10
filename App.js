@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import { Root } from "native-base";
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { TaskListScreen } from "./src/views/TaskListScreen";
-import SignInScreen from "./src/views/SignInScreen";
-import SignUpScreen from "./src/views/SignUpScreen";
-import { View, Image, Platform } from "react-native";
-import BG from "./assets/BG.png";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import StackNavigator from "./src/navigation/StackNavigation";
 
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
 
 export default class App extends Component {
 	constructor(props) {
@@ -42,56 +40,8 @@ export default class App extends Component {
 			return (
 				<Root>
 					<View style={{ flex: 1 }}>
-						{/*<Image
-							source={BG}
-							style={{
-								position: "absolute",
-								opacity: 0.7
-							}}
-						/> */}
 						<NavigationContainer>
-							<Stack.Navigator initialRouteName="Sign In">
-								<Stack.Screen
-									name="Sign Up"
-									component={SignUpScreen}
-									options={{
-										title: "",
-										headerStyle: {
-											backgroundColor: "rgb(245,215,205)",
-											shadowOpacity: 0,
-											elevation: 0
-										}
-										// headerTransparent: Platform.OS === "ios" ? false : true
-									}}
-								/>
-								<Stack.Screen
-									name="Sign In"
-									component={SignInScreen}
-									options={{
-										title: "",
-										headerStyle: {
-											backgroundColor: "rgb(245,215,205)",
-											shadowOpacity: 0,
-											elevation: 0
-										}
-										// headerTransparent: Platform.OS === "ios" ? false : true
-									}}
-								/>
-								<Stack.Screen
-									name="Task List"
-									component={TaskListScreen}
-									options={{
-										title: "",
-										headerStyle: {
-											backgroundColor: "rgb(245,215,205)",
-											shadowOpacity: 0,
-											elevation: 0
-											// backgroundColor: "transparent"
-										}
-										// headerTransparent: Platform.OS === "ios" ? false : true
-									}}
-								/>
-							</Stack.Navigator>
+							<StackNavigator />
 						</NavigationContainer>
 					</View>
 				</Root>
