@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export const EditTask = props => {
+	const d = props.val.date;
+	const [date, setDate] = useState(new Date(d));
 	const [text, setText] = useState("");
 
 	// Pressing 'Edit' button changes the name of the selected task. Update taskList and call updateTask.
 	const editTask = id => {
 		var tasks = [...props.taskList];
-		var d = new Date();
-		var newDate =
-			d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+		// var d = new Date();
+		var newDate = date;
+		// d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
 		let task = tasks.find((taskObj, i) => {
 			if (taskObj.key === id) {
 				tasks[i].task = text === "" ? taskObj.task + text : text;
@@ -20,6 +23,11 @@ export const EditTask = props => {
 		});
 		props.changeTaskList(tasks);
 		props.updateTask(task.key, task.task, task.date, task.checked);
+	};
+
+	const onChange = (event, selectedDate) => {
+		const currentDate = selectedDate || date;
+		setDate(currentDate);
 	};
 
 	return (
@@ -50,7 +58,16 @@ export const EditTask = props => {
 				/>
 			</View>
 			<View style={styles.date}>
-				<Text style={styles.dateText}>{props.val.date}</Text>
+				<DateTimePicker
+					value={date}
+					mode={"date"}
+					is24Hour={true}
+					display="default"
+					onChange={onChange}
+				/>
+				<Text style={styles.dateText}>
+					{date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+				</Text>
 			</View>
 		</View>
 	);

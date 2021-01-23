@@ -16,8 +16,8 @@ export const AddTask = props => {
 	// Push task to user's task list in the database
 	const pushTask = () => {
 		if (taskText) {
-			var d = new Date();
-			var date = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+			var date = new Date();
+			// var date = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
 			var task = taskText;
 			var checked = false;
 			firebase
