@@ -1,6 +1,7 @@
 ### Task-List Mobile App
 
-An app for creating, reading, updating and deleting (CRUD) tasks from a list.  
+An app for creating, reading, updating and deleting (CRUD) tasks from a list. 
+</br> 
 <img src="https://github.com/noymashat/Task-List/blob/master/assets/tasklist.gif" width="250" height="550" />
 
 #### Technologies
