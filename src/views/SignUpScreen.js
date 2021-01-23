@@ -1,16 +1,16 @@
 import React, { Component } from "react";
-import { StyleSheet, Text } from "react-native";
-// import firebase from "firebase";
 import {
-	Container,
-	Content,
-	Form,
-	Item,
-	Input,
-	Button,
-	Label
-} from "native-base";
+	StyleSheet,
+	View,
+	ImageBackground,
+	Text,
+	KeyboardAvoidingView,
+	ScrollView
+} from "react-native";
+import { Form, Item, Input, Button, Label } from "native-base";
 import firebase from "../../database/firebase";
+import BG from "../../assets/BG.png";
+import Colors from "../../colors";
 
 export default class SignInScreen extends Component {
 	constructor(props) {
@@ -84,69 +84,119 @@ export default class SignInScreen extends Component {
 
 	render() {
 		return (
-			<Container style={styles.container}>
-				<Content>
-					<Form>
-						<Item stackedLabel>
-							<Label>First Name</Label>
-							<Input onChangeText={this.handleFirstName} />
-						</Item>
-						<Item stackedLabel>
-							<Label>Last Name</Label>
-							<Input onChangeText={this.handleLastName} />
-						</Item>
-						<Item stackedLabel>
-							<Label>Email</Label>
-							<Input onChangeText={this.handleEmail} />
-						</Item>
-						<Item stackedLabel>
-							<Label>Password</Label>
-							<Input
-								onChangeText={this.handlePassword}
-								secureTextEntry={true}
-							/>
-						</Item>
-						<Item stackedLabel last>
-							<Label>Confirm Password</Label>
-							<Input
-								onChangeText={this.handleConfPassword}
-								secureTextEntry={true}
-							/>
-						</Item>
-						{this.state.error === "" ? (
-							<Text style={{ fontSize: 14, padding: 10 }}></Text>
-						) : (
-							<Text
-								style={{
-									textAlign: "center",
-									color: "#FF0000",
-									fontSize: 14,
-									padding: 10
-								}}
-							>
-								Error: {this.state.error}
-							</Text>
-						)}
-						<Button full light onPress={this.onSignUp}>
-							<Text> SIGN UP </Text>
-						</Button>
-					</Form>
-				</Content>
-			</Container>
+			<ImageBackground style={styles.image} source={BG}>
+				<View style={styles.view2}>
+					<KeyboardAvoidingView
+						behavior={Platform.OS == "ios" ? "padding" : "height"}
+						keyboardVerticalOffset={100}
+						style={{ width: "100%" }}
+					>
+						<ScrollView>
+							<View style={{ alignItems: "center" }}>
+								<Form style={styles.form}>
+									<Item style={styles.formItem} stackedLabel>
+										<Label>First Name</Label>
+										<Input onChangeText={this.handleFirstName} />
+									</Item>
+									<Item style={styles.formItem} stackedLabel>
+										<Label>Last Name</Label>
+										<Input onChangeText={this.handleLastName} />
+									</Item>
+									<Item style={styles.formItem} stackedLabel>
+										<Label>Email</Label>
+										<Input onChangeText={this.handleEmail} />
+									</Item>
+									<Item style={styles.formItem} stackedLabel>
+										<Label>Password</Label>
+										<Input
+											onChangeText={this.handlePassword}
+											secureTextEntry={true}
+										/>
+									</Item>
+									<Item style={styles.formItemLast} stackedLabel last>
+										<Label>Confirm Password</Label>
+										<Input
+											onChangeText={this.handleConfPassword}
+											secureTextEntry={true}
+										/>
+									</Item>
+									{this.state.error === "" ? (
+										<Text style={{ fontSize: 14, padding: 10 }}></Text>
+									) : (
+										<Text style={styles.errorText}>
+											Error: {this.state.error}
+										</Text>
+									)}
+									<Button
+										style={styles.button}
+										full
+										light
+										onPress={this.onSignUp}
+									>
+										<Text style={{ fontSize: 18 }}> SIGN UP </Text>
+									</Button>
+								</Form>
+							</View>
+						</ScrollView>
+					</KeyboardAvoidingView>
+				</View>
+			</ImageBackground>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	container: {
+	view1: {},
+	image: {
+		height: "100%",
+		width: "100%"
+	},
+	view2: {
 		flex: 1,
-		backgroundColor: "#ffffff",
-		justifyContent: "center"
+		alignItems: "center",
+		justifyContent: "flex-start",
+		marginTop: 40
 	},
-	header: {
-		backgroundColor: "#ff6699"
+	form: {
+		width: "90%",
+		height: "70%",
+		backgroundColor: Colors.light.formBackground,
+		borderRadius: 10,
+		justifyContent: "flex-start"
 	},
-	text: {
-		textAlign: "center"
+	formItem: {
+		alignSelf: "center",
+		width: "90%",
+		backgroundColor: Colors.light.itemNoOpacity,
+		borderRadius: 10,
+		borderColor: Colors.light.borderColor,
+		paddingLeft: 15,
+		borderBottomWidth: 2,
+		margin: 10
+	},
+	formItemLast: {
+		alignSelf: "center",
+		width: "90%",
+		backgroundColor: Colors.light.itemNoOpacity,
+		borderRadius: 10,
+		borderColor: Colors.light.borderColor,
+		paddingLeft: 15,
+		borderBottomWidth: 2,
+		marginTop: 10
+	},
+	button: {
+		alignSelf: "center",
+		width: "50%",
+		backgroundColor: Colors.light.itemNoOpacity,
+		borderRadius: 20,
+		borderColor: Colors.light.borderColor,
+		borderWidth: 2
+	},
+	errorText: {
+		textAlign: "center",
+		color: Colors.light.borderColor,
+		fontSize: 16,
+		fontWeight: "bold",
+		padding: 10
 	}
 });

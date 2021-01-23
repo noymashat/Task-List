@@ -5,16 +5,17 @@ import { CheckBox } from "react-native-elements";
 import firebase from "../../database/firebase";
 
 export const TaskItem = props => {
-	const [checked, setChecked] = useState(props.checked);
+	const d = props.val.date;
+	const [date, setDate] = useState(new Date(d));
+	const [checked, setChecked] = useState(props.val.checked);
 	const userID = firebase.auth().currentUser.uid; // get userID from firebase
 
+	// update the checked property of the task in taskList.
 	const changeChecked = id => {
-		console.log("------Check:\n", props.taskList);
-		const ch = !checked;
 		var tasks = [...props.taskList];
 		let task = tasks.find((taskObj, i) => {
 			if (taskObj.key === id) {
-				tasks[i].checked = ch;
+				tasks[i].checked = !checked;
 				return taskObj; // stop searching
 			}
 		});
@@ -23,15 +24,11 @@ export const TaskItem = props => {
 		setChecked(!checked);
 	};
 
-	// Pressing 'Delete' button removes a selected task. Update state and call delTask.
+	// Pressing 'Delete' button removes a selected task. Update taskList and call delTask.
 	const deleteTask = id => {
-		console.log("delete:", id);
 		var tasks = [...props.taskList];
-		console.log("from delete1:\n", tasks);
 		tasks = tasks.filter(task => id !== task.key);
-		console.log("from delete2:\n", tasks);
 		props.changeTaskList(tasks);
-		// this.change(tasks);
 		removeTask(id);
 	};
 
@@ -49,17 +46,15 @@ export const TaskItem = props => {
 			});
 	};
 
-	const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
 	return (
 		<View style={styles.view1}>
 			<View style={styles.view2}>
 				<CheckBox
 					checked={checked}
 					checkedColor={"black"}
-					style={styles.checkbox}
+					uncheckedColor={"black"}
 					onIconPress={() => {
-						changeChecked(props.keyval, !checked);
-						// this.setState({ checked: !this.state.checked });
+						changeChecked(props.val.key, !checked);
 					}}
 				/>
 
@@ -79,37 +74,29 @@ export const TaskItem = props => {
 					size={24}
 					color="black"
 					onPress={() => {
-						deleteTask(props.keyval);
-						// this.setState({ checked false });
+						deleteTask(props.val.key);
 					}}
 				/>
 			</View>
 			<View style={styles.date}>
-				<Text style={styles.dateText}>{props.val.date}</Text>
+				<Text style={styles.dateText}>
+					Due Date: {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+				</Text>
 			</View>
 		</View>
 	);
 };
 
-const stylesAndroid = StyleSheet.create({
+const styles = StyleSheet.create({
 	view1: {
 		flex: 1,
-		// flexDirection: "column",
-		borderTopWidth: 0.5,
+		// borderBottomWidth: 1,
 		width: "100%"
 	},
 	view2: {
-		paddingTop: 10,
-		paddingBottom: 10,
 		flexDirection: "row",
-		flexWrap: "wrap",
 		width: "100%",
 		justifyContent: "center"
-	},
-	checkbox: {
-		padding: 0,
-		flexDirection: "row",
-		alignItems: "center"
 	},
 	icon: {
 		padding: 10,
@@ -118,81 +105,26 @@ const stylesAndroid = StyleSheet.create({
 	textInput: {
 		width: 200,
 		padding: 10,
-		fontSize: 18,
-		borderBottomWidth: 1
+		fontSize: 18
+		// borderBottomWidth: 1
 	},
 	checkedText: {
 		fontSize: 18,
 		textDecorationLine: "line-through",
-		textDecorationStyle: "solid",
+		// textDecorationStyle: "solid",
 		fontWeight: "bold",
-		width: 200,
+		width: 180,
 		paddingTop: 15
 	},
 	taskText: {
 		fontSize: 18,
 		fontWeight: "bold",
-		width: 200,
+		width: "50%",
 		paddingTop: 15
 	},
 	date: {
-		flex: 1,
-		paddingLeft: 50
-	},
-	dateText: {
-		paddingLeft: 15,
-		fontSize: 14
-	}
-});
-
-const stylesIos = StyleSheet.create({
-	view1: {
-		flex: 1,
-		// flexDirection: "column",
-		borderTopWidth: 0.5,
-		width: "100%"
-	},
-	view2: {
-		paddingTop: 10,
-		paddingBottom: 10,
-		flexDirection: "row",
-		flexWrap: "wrap",
-		width: "100%",
-		justifyContent: "center"
-	},
-	checkbox: {
-		padding: 0,
-		flexDirection: "row",
-		alignItems: "center"
-	},
-	icon: {
-		padding: 10,
-		alignSelf: "flex-end"
-	},
-	textInput: {
-		// paddingLeft: 65,
-		width: 200,
-		padding: 10,
-		fontSize: 18,
-		borderBottomWidth: 1
-	},
-	checkedText: {
-		fontSize: 18,
-		textDecorationLine: "line-through",
-		textDecorationStyle: "solid",
-		fontWeight: "bold",
-		width: 200,
-		paddingTop: 15
-	},
-	taskText: {
-		fontSize: 18,
-		fontWeight: "bold",
-		width: 200,
-		paddingTop: 15
-	},
-	date: {
-		flex: 1,
-		paddingLeft: 50
+		paddingLeft: 50,
+		paddingBottom: 10
 	},
 	dateText: {
 		paddingLeft: 15,

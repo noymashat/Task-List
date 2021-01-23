@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export const EditTask = props => {
+	const d = props.val.date;
+	const [date, setDate] = useState(new Date(d));
 	const [text, setText] = useState("");
 
+	// Pressing 'Edit' button changes the name of the selected task. Update taskList and call updateTask.
 	const editTask = id => {
-		console.log("edit");
 		var tasks = [...props.taskList];
-		console.log(tasks);
-		var d = new Date();
-		var newDate =
-			d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+		// var d = new Date();
+		var newDate = date;
+		// d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
 		let task = tasks.find((taskObj, i) => {
 			if (taskObj.key === id) {
 				tasks[i].task = text === "" ? taskObj.task + text : text;
@@ -23,7 +25,10 @@ export const EditTask = props => {
 		props.updateTask(task.key, task.task, task.date, task.checked);
 	};
 
-	const styles = Platform.OS === "ios" ? stylesIos : stylesAndroid;
+	const onChange = (event, selectedDate) => {
+		const currentDate = selectedDate || date;
+		setDate(currentDate);
+	};
 
 	return (
 		<View style={styles.view1}>
@@ -40,7 +45,7 @@ export const EditTask = props => {
 					size={24}
 					color="black"
 					onPress={() => {
-						editTask(props.keyval);
+						editTask(props.val.key);
 						props.changeEdit(false);
 					}}
 				/>
@@ -53,17 +58,24 @@ export const EditTask = props => {
 				/>
 			</View>
 			<View style={styles.date}>
-				<Text style={styles.dateText}>{props.val.date}</Text>
+				<DateTimePicker
+					value={date}
+					mode={"date"}
+					is24Hour={true}
+					display="default"
+					onChange={onChange}
+				/>
+				<Text style={styles.dateText}>
+					{date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+				</Text>
 			</View>
 		</View>
 	);
 };
 
-const stylesIos = StyleSheet.create({
+const styles = StyleSheet.create({
 	view1: {
 		flex: 1,
-		// flexDirection: "column",
-		borderTopWidth: 0.5,
 		width: "100%"
 	},
 	view2: {
@@ -72,12 +84,11 @@ const stylesIos = StyleSheet.create({
 		flexDirection: "row",
 		width: "100%",
 		justifyContent: "center",
-		paddingLeft: 55,
+		paddingLeft: 45,
 		flexWrap: "wrap"
 	},
 	textInput: {
-		// paddingLeft: 65,
-		width: 200,
+		width: 180,
 		padding: 10,
 		fontSize: 18,
 		borderBottomWidth: 1
@@ -88,44 +99,8 @@ const stylesIos = StyleSheet.create({
 	},
 	date: {
 		flex: 1,
-		paddingLeft: 50
-	},
-	dateText: {
-		paddingLeft: 15,
-		fontSize: 14
-	}
-});
-
-const stylesAndroid = StyleSheet.create({
-	view1: {
-		flex: 1,
-		// flexDirection: "column",
-		borderTopWidth: 0.5,
-		width: "100%"
-	},
-	view2: {
-		paddingTop: 10,
-		paddingBottom: 10,
-		flexDirection: "row",
-		width: "100%",
-		justifyContent: "center",
-		paddingLeft: 55,
-		flexWrap: "wrap"
-	},
-	textInput: {
-		// paddingLeft: 65,
-		width: 200,
-		padding: 10,
-		fontSize: 18,
-		borderBottomWidth: 1
-	},
-	icon: {
-		padding: 10,
-		alignSelf: "flex-end"
-	},
-	date: {
-		flex: 1,
-		paddingLeft: 50
+		paddingLeft: 50,
+		paddingBottom: 10
 	},
 	dateText: {
 		paddingLeft: 15,
