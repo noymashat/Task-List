@@ -1,4 +1,4 @@
-### Task-List Mobile App
+## Task-List Mobile App
 
 An app for creating, reading, updating and deleting (CRUD) tasks from a list.
 </br>
