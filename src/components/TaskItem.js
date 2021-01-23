@@ -5,6 +5,8 @@ import { CheckBox } from "react-native-elements";
 import firebase from "../../database/firebase";
 
 export const TaskItem = props => {
+	const d = props.val.date;
+	const [date, setDate] = useState(new Date(d));
 	const [checked, setChecked] = useState(props.val.checked);
 	const userID = firebase.auth().currentUser.uid; // get userID from firebase
 
@@ -77,7 +79,9 @@ export const TaskItem = props => {
 				/>
 			</View>
 			<View style={styles.date}>
-				<Text style={styles.dateText}>{props.val.date}</Text>
+				<Text style={styles.dateText}>
+					Due Date: {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+				</Text>
 			</View>
 		</View>
 	);

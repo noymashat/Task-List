@@ -9,7 +9,6 @@ import StackNavigator from "./src/navigation/StackNavigation";
 
 const Drawer = createDrawerNavigator();
 
-
 export default class App extends Component {
 	constructor(props) {
 		super(props);
@@ -17,6 +16,7 @@ export default class App extends Component {
 			loading: true
 		};
 	}
+
 	// Fix missing font warnnings
 	async componentDidMount() {
 		await Font.loadAsync({
@@ -25,7 +25,6 @@ export default class App extends Component {
 		});
 		this.setState({ loading: false });
 	}
-
 	// If the app is still loding, render a React component
 	// that tells Expo to keep the app's loading screen open
 	render() {

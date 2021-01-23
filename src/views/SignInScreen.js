@@ -5,7 +5,7 @@ import {
 	ImageBackground,
 	Text,
 	ScrollView,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
 } from "react-native";
 import { Form, Item, Input, Button, Label } from "native-base";
 import firebase from "../../database/firebase";
